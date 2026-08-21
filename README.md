@@ -13,7 +13,7 @@ Mini-projeto em React (Vite) que consome a API pública do [TMDB](https://www.th
 VITE_TMDB_API_KEY=sua_chave_aqui
 ```
 
-**Importante:** o arquivo `.env` já está no `.gitignore` — nunca é enviado pro GitHub. Assim sua chave fica só na sua máquina.
+**Importante:** o arquivo `.env` já está no `.gitignore`, nunca é enviado pro GitHub. Assim sua chave fica só na sua máquina.
 
 ## Como rodar
 
@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Abra o link mostrado no terminal (geralmente `http://localhost:5173`).
+Abra o link mostrado no terminal.
 
 ## Tecnologias
 
