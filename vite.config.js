@@ -6,5 +6,5 @@ export default defineConfig({
   plugins: [react()],
   // Precisa bater com o nome do repositório no GitHub Pages.
   // Se você criar o repo com outro nome, ajuste aqui também.
-  base: '/buscador-filmes/',
+  base: '/buscador-filmes-react/',
 })
