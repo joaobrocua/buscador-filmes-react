@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Abra o link mostrado no terminal (geralmente `http://localhost:5173`).
+Abra o link mostrado no terminal.
 
 ## Tecnologias
 
