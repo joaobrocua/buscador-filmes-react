@@ -18,7 +18,7 @@ export default function App() {
       <main className="container">
         <div className="controls">
           <TypeToggle tipo={tipo} onChange={setTipo} />
-          <SearchBar onSearch={buscar} tipo={tipo} />
+          <SearchBar onSearch={buscar} tipo={tipo} carregando={carregando} />
         </div>
 
         <h2 className="section-title">
@@ -29,10 +29,13 @@ export default function App() {
 
         {erro && <ApiNotice tipo={erro} />}
 
-        {!erro && carregando && <p className="loading-state">Carregando...</p>}
-
-        {!erro && !carregando && (
-          <MediaGrid resultados={resultados} tipo={tipo} onSelect={setSelecionado} />
+        {!erro && (
+          <MediaGrid
+            resultados={resultados}
+            tipo={tipo}
+            onSelect={setSelecionado}
+            carregando={carregando}
+          />
         )}
       </main>
 
