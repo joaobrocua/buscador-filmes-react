@@ -18,7 +18,7 @@ function tmdbDevProxy(env) {
         try {
           const reqUrl = new URL(req.originalUrl || req.url, 'http://localhost')
           const caminho = reqUrl.searchParams.get('path') || ''
-          const query = reqUrl.searchParams.get('query') || ''
+          const params = Object.fromEntries(reqUrl.searchParams)
 
           if (!endpointPermitido(caminho)) {
             return enviar(400, { error: 'endpoint não permitido' })
@@ -26,7 +26,7 @@ function tmdbDevProxy(env) {
 
           let url
           try {
-            url = montarUrlTmdb(caminho, query, env.TMDB_API_KEY)
+            url = montarUrlTmdb(caminho, params, env.TMDB_API_KEY)
           } catch {
             return enviar(503, { error: 'CHAVE_AUSENTE' })
           }
