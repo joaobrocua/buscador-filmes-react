@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Vercel
+.vercel
+
+# Ferramentas de assistente de código (Claude Code / skills) — não fazem parte do produto
+.claude
+.agents
+skills-lock.json
+
 # variáveis de ambiente (contém a chave da API — nunca deve ir pro GitHub)
 .env
 .env.*

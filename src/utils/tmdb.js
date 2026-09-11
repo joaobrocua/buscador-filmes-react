@@ -1,30 +1,23 @@
-// Wrapper simples para a API do TMDB (The Movie Database).
-// A chave vem de uma variável de ambiente — nunca é escrita no código.
-// Veja o README para instruções de como configurar sua chave.
+// Cliente da API do TMDB via proxy próprio (/api/tmdb).
+// A chave NÃO vive mais no front-end: as chamadas passam por uma função
+// serverless que injeta a chave no servidor. Veja api/tmdb.js.
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-const BASE_URL = 'https://api.themoviedb.org/3';
+const PROXY = '/api/tmdb';
 const IMG_BASE = 'https://image.tmdb.org/t/p';
-
-export const semChave = !API_KEY;
 
 export function urlPoster(path, tamanho = 'w342') {
   if (!path) return null;
   return `${IMG_BASE}/${tamanho}${path}`;
 }
 
-async function buscarNaApi(endpoint, params = {}) {
-  if (semChave) {
-    throw new Error('CHAVE_AUSENTE');
-  }
+async function buscarNaApi(caminho, params = {}) {
+  const qs = new URLSearchParams({ path: caminho, ...params });
+  const resp = await fetch(`${PROXY}?${qs}`);
 
-  const url = new URL(`${BASE_URL}${endpoint}`);
-  url.searchParams.set('api_key', API_KEY);
-  url.searchParams.set('language', 'pt-BR');
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-
-  const resp = await fetch(url);
   if (!resp.ok) {
+    if (resp.status === 503) {
+      throw new Error('CHAVE_AUSENTE');
+    }
     throw new Error(`Erro na API TMDB: ${resp.status}`);
   }
   return resp.json();
