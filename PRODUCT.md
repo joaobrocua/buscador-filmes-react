@@ -19,7 +19,7 @@ Dual audience, held equally:
 
 ## Product Purpose
 
-A small movie & TV search tool built on the public TMDB API: browse popular titles, search by name, and open a detail view (synopsis, rating, genres, runtime/seasons). Success is a fast, frictionless search that also reads as a deliberately designed piece of work, not a tutorial-grade CRUD demo.
+A small movie & TV search tool built on the public TMDB API: browse popular titles, filter by streaming service, see what's trending today, search by name, and open a detail view (synopsis, rating, genres, runtime/seasons, where to watch). Success is a fast, frictionless search that also reads as a deliberately designed piece of work, not a tutorial-grade CRUD demo.
 
 ## Positioning
 
@@ -32,6 +32,8 @@ Single-page app, no auth. A small serverless proxy (`api/tmdb.js`, deployed on V
 ## Capabilities and Constraints
 
 - No account system, no watchlists/favorites, no backend beyond the single TMDB proxy function — purely a read-only TMDB client.
+- Streaming-provider filter, "trending today" row, and "where to watch" all use TMDB's real watch-provider data (itself licensed from JustWatch) — never fabricated. The trending badge is labeled plainly as "Em alta" (TMDB's real trending endpoint), not framed as a per-platform chart TMDB doesn't provide.
+- "Assista agora" / "onde assistir" links open TMDB's own watch page for the title (where TMDB's JustWatch-sourced data lives), not a direct deep link into the streaming app.
 - Must keep the mandatory TMDB attribution notice in the footer.
 - The TMDB key lives only in `TMDB_API_KEY` (server-side env var, no `VITE_` prefix) and must never be embedded in the client bundle again; the app must degrade gracefully (an in-product notice, not a crash) when the proxy reports the key is missing.
 - Hosting: Vercel (static build + one serverless function under `api/`).

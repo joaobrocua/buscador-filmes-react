@@ -6,9 +6,9 @@ export default function Header() {
       <div className="topbar-inner">
         <div className="brand">
           <IconMark className="brand-mark" />
-          <h1>Caderno de Cinema</h1>
+          <h1>Buscador de Filmes &amp; Séries</h1>
         </div>
-        <p className="dateline">registro de filmes &amp; séries assistidos e por assistir</p>
+        <p className="tagline">Explore os títulos mais populares ou pesquise pelo nome</p>
       </div>
     </header>
   );

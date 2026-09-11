@@ -10,10 +10,6 @@ export default function MediaGrid({ resultados, tipo, onSelect, carregando }) {
         {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
           <div className="media-card media-card-skeleton" key={i}>
             <div className="media-poster skeleton-block" />
-            <div className="media-info">
-              <div className="skeleton-line skeleton-line-title" />
-              <div className="skeleton-line skeleton-line-sub" />
-            </div>
           </div>
         ))}
       </div>
@@ -24,7 +20,7 @@ export default function MediaGrid({ resultados, tipo, onSelect, carregando }) {
     return (
       <div className="empty-state">
         <IconFilm className="empty-icon" />
-        <p>Nenhum resultado encontrado nas fichas do arquivo.</p>
+        <p>Nenhum resultado encontrado.</p>
       </div>
     );
   }

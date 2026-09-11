@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { buscarDetalhes, urlPoster } from '../utils/tmdb';
+import { buscarDetalhes, buscarOndeAssistir, urlPoster, urlProvedor } from '../utils/tmdb';
 import { IconFilm, IconX } from './Icons';
-import StarRating from './StarRating';
+import RatingBadge from './RatingBadge';
+import SeasonEpisodes from './SeasonEpisodes';
 
 export default function MediaModal({ item, tipo, onClose }) {
   const [detalhes, setDetalhes] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [ondeAssistir, setOndeAssistir] = useState(null);
   const closeBtnRef = useRef(null);
 
   useEffect(() => {
@@ -15,6 +17,14 @@ export default function MediaModal({ item, tipo, onClose }) {
       .then(data => { if (ativo) setDetalhes(data); })
       .catch(() => { if (ativo) setDetalhes(null); })
       .finally(() => { if (ativo) setCarregando(false); });
+    return () => { ativo = false; };
+  }, [item.id, tipo]);
+
+  useEffect(() => {
+    let ativo = true;
+    buscarOndeAssistir(tipo, item.id)
+      .then(data => { if (ativo) setOndeAssistir(data.results?.BR || null); })
+      .catch(() => { if (ativo) setOndeAssistir(null); });
     return () => { ativo = false; };
   }, [item.id, tipo]);
 
@@ -39,7 +49,6 @@ export default function MediaModal({ item, tipo, onClose }) {
   const titulo = tipo === 'movie' ? item.title : item.name;
   const data = tipo === 'movie' ? item.release_date : item.first_air_date;
   const poster = urlPoster(item.poster_path, 'w500');
-  const nota = item.vote_average ? item.vote_average / 2 : 0;
   const tituloId = `modal-titulo-${item.id}`;
 
   return (
@@ -56,41 +65,59 @@ export default function MediaModal({ item, tipo, onClose }) {
         </button>
 
         <div className="modal-body">
-          <div className="modal-poster">
-            {poster
-              ? <img src={poster} alt={titulo} />
-              : <div className="media-poster-fallback"><IconFilm /></div>}
+          <div className="modal-poster-col">
+            <div className="modal-poster">
+              {poster
+                ? <img src={poster} alt={titulo} />
+                : <div className="media-poster-fallback"><IconFilm /></div>}
+            </div>
+
+            {ondeAssistir?.flatrate?.length > 0 && (
+              <div className="modal-providers">
+                <span className="modal-providers-label">Onde assistir</span>
+                <div className="modal-providers-list">
+                  {ondeAssistir.flatrate.map(p => (
+                    <a
+                      key={p.provider_id}
+                      href={ondeAssistir.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={p.provider_name}
+                    >
+                      <img src={urlProvedor(p.logo_path)} alt={p.provider_name} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="modal-text">
-            <p className="modal-dateline">
-              {data ? `registrado em ${data.slice(0, 4)}` : 'data não registrada'}
-            </p>
             <h2 id={tituloId}>{titulo}</h2>
 
-            {item.vote_average > 0 && (
-              <div className="modal-rating">
-                <StarRating value={nota} />
-                <span className="modal-rating-value">{item.vote_average.toFixed(1)}/10</span>
-              </div>
-            )}
-
-            <p className="modal-runtime">
-              {!carregando && detalhes?.runtime ? `${detalhes.runtime} min` : ''}
-              {!carregando && detalhes?.number_of_seasons ? `${detalhes.number_of_seasons} temporada(s)` : ''}
-            </p>
-
-            {!carregando && detalhes?.genres?.length > 0 && (
-              <div className="modal-genres">
-                {detalhes.genres.map(g => (
-                  <span key={g.id} className="genre-stamp">{g.name}</span>
-                ))}
-              </div>
-            )}
+            <div className="modal-facts">
+              <span className="modal-year">{data ? data.slice(0, 4) : 'Ano desconhecido'}</span>
+              {item.vote_average > 0 && <RatingBadge value={item.vote_average} />}
+              {!carregando && detalhes?.runtime ? <span>{detalhes.runtime} min</span> : null}
+              {!carregando && detalhes?.number_of_seasons
+                ? <span>{detalhes.number_of_seasons} temporada(s)</span>
+                : null}
+              {!carregando && detalhes?.genres?.length > 0 && detalhes.genres.map(g => (
+                <span key={g.id} className="genre-tag">{g.name}</span>
+              ))}
+            </div>
 
             <p className="modal-overview">
               {item.overview || 'Sinopse não disponível.'}
             </p>
+
+            {tipo === 'tv' && !carregando && detalhes?.seasons?.length > 0 && (
+              <SeasonEpisodes
+                tvId={item.id}
+                temporadas={detalhes.seasons}
+                linkAssistir={ondeAssistir?.link}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -5,12 +5,12 @@
 // Uso pelo front-end: /api/tmdb?path=/movie/popular
 //                     /api/tmdb?path=/search/movie&query=matrix
 //                     /api/tmdb?path=/movie/12345
+//                     /api/tmdb?path=/discover/movie&with_watch_providers=8
 
 import { endpointPermitido, montarUrlTmdb } from './_tmdb-core.js';
 
 export default async function handler(req, res) {
   const caminho = typeof req.query.path === 'string' ? req.query.path : '';
-  const query = typeof req.query.query === 'string' ? req.query.query : '';
 
   if (!endpointPermitido(caminho)) {
     return res.status(400).json({ error: 'endpoint não permitido' });
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   let url;
   try {
-    url = montarUrlTmdb(caminho, query, process.env.TMDB_API_KEY);
+    url = montarUrlTmdb(caminho, req.query, process.env.TMDB_API_KEY);
   } catch {
     return res.status(503).json({ error: 'CHAVE_AUSENTE' });
   }
