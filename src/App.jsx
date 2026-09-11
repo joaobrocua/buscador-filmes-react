@@ -83,6 +83,7 @@ export default function App() {
 
         {!erro && (
           <MediaGrid
+            key={`${tipo}:${provedorId}:${ordenarPor}:${generoId}:${termoAtual}`}
             resultados={resultados}
             tipo={tipo}
             onSelect={setSelecionado}
