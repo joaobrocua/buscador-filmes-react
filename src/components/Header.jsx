@@ -1,9 +1,14 @@
+import { IconMark } from './Icons';
+
 export default function Header() {
   return (
     <header className="topbar">
       <div className="topbar-inner">
-        <h1>🎬 Buscador de Filmes &amp; Séries</h1>
-        <p>Explore os títulos mais populares ou pesquise pelo nome</p>
+        <div className="brand">
+          <IconMark className="brand-mark" />
+          <h1>Caderno de Cinema</h1>
+        </div>
+        <p className="dateline">registro de filmes &amp; séries assistidos e por assistir</p>
       </div>
     </header>
   );
