@@ -20,7 +20,7 @@ const ENDPOINTS_PERMITIDOS = [
 // a própria chave) é decidido só pelo servidor.
 const PARAMS_PERMITIDOS = new Set([
   'query', 'with_watch_providers', 'sort_by', 'vote_count.gte', 'page',
-  'with_genres', 'with_original_language',
+  'with_genres', 'with_original_language', 'with_watch_monetization_types',
 ]);
 
 // Lista fechada de ordenações reais da TMDB — nunca repassamos um sort_by
@@ -63,6 +63,10 @@ export function montarUrlTmdb(caminho, params, chave) {
     // só é usado no caso especial "Anime", por isso fica travado em "ja".
     if (chaveParam === 'with_genres' && !/^\d{1,6}$/.test(String(valor))) continue;
     if (chaveParam === 'with_original_language' && valor !== 'ja') continue;
+    // Só assinatura (flatrate) — sem isso o filtro por streaming também
+    // combina aluguel/compra avulsos, mostrando um título no logo de um
+    // serviço onde ele só pode ser alugado, não assistido pela assinatura.
+    if (chaveParam === 'with_watch_monetization_types' && valor !== 'flatrate') continue;
     url.searchParams.set(chaveParam, valor);
   }
   return url;

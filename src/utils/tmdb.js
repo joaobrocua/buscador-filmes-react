@@ -34,7 +34,12 @@ export function buscarPopulares(tipo, provedorId, ordenarPor, pagina = 1, genero
     return buscarNaApi(`/${tipo}/popular`, { page: pagina });
   }
   const params = { page: pagina };
-  if (provedorId) params.with_watch_providers = provedorId;
+  if (provedorId) {
+    params.with_watch_providers = provedorId;
+    // Só título disponível por assinatura — combina com o que "Onde
+    // assistir" mostra no modal (também só assinatura, não aluguel/compra).
+    params.with_watch_monetization_types = 'flatrate';
+  }
   if (generoId === 'anime') {
     // A TMDB não tem categoria "Anime" — a aproximação honesta é gênero
     // Animação (16) + idioma original japonês, a mesma técnica usada pela
