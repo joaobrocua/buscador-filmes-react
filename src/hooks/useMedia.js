@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { buscarPopulares, buscarPorTermo, semChave } from '../utils/tmdb';
+import { buscarPopulares, buscarPorTermo } from '../utils/tmdb';
 
 export function useMedia(tipo) {
   const [resultados, setResultados] = useState([]);
@@ -40,10 +40,6 @@ export function useMedia(tipo) {
   }, [tipo, carregarPopulares]);
 
   useEffect(() => {
-    if (semChave) {
-      setErro('CHAVE_AUSENTE');
-      return;
-    }
     carregarPopulares();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tipo]);
