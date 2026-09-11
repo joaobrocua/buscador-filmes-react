@@ -3,6 +3,19 @@ import { buscarPopulares, buscarPorTermo } from '../utils/tmdb';
 
 const PAGINAS_INICIAIS = 2;
 
+// A TMDB pagina por "popularidade no instante da chamada": como buscamos
+// duas páginas em paralelo, a popularidade pode mudar entre uma chamada e
+// outra e o mesmo título aparecer nas duas páginas. Sem isso, ele aparece
+// duplicado na grade.
+function semDuplicatas(itens) {
+  const vistos = new Set();
+  return itens.filter((item) => {
+    if (vistos.has(item.id)) return false;
+    vistos.add(item.id);
+    return true;
+  });
+}
+
 export function useMedia(tipo, provedorId, ordenarPor, generoId) {
   const [resultados, setResultados] = useState([]);
   const [carregando, setCarregando] = useState(false);
@@ -30,7 +43,7 @@ export function useMedia(tipo, provedorId, ordenarPor, generoId) {
           buscarPopulares(tipo, provedorId, ordenarPor, i + 1, generoId)),
       );
       if (requisicaoAtual.current !== minhaRequisicao) return;
-      setResultados(paginas.flatMap(p => p.results || []));
+      setResultados(semDuplicatas(paginas.flatMap(p => p.results || [])));
       setPagina(PAGINAS_INICIAIS);
       setTotalPaginas(paginas[0]?.total_pages || 1);
     } catch (e) {
@@ -49,7 +62,7 @@ export function useMedia(tipo, provedorId, ordenarPor, generoId) {
     try {
       const data = await buscarPopulares(tipo, provedorId, ordenarPor, proxima, generoId);
       if (requisicaoAtual.current !== minhaRequisicao) return;
-      setResultados(atuais => [...atuais, ...(data.results || [])]);
+      setResultados(atuais => semDuplicatas([...atuais, ...(data.results || [])]));
       setPagina(proxima);
     } catch {
       // a tela já tem conteúdo — uma falha aqui não vira um erro de página inteira
